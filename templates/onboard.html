@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot UI</title>
-    <link rel="stylesheet" href="../templates/onstyle.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='onstyle.css') }}">
 </head>
 <body>
     <div class="main-content">
@@ -44,7 +44,7 @@
 
                 // If the server sends "navigate", redirect the user
                 if (message === "navigate") {
-                    window.location.href = "/templates/index.html";  // Update this URL as needed
+                    window.location.href = "/index.html";  // Update this URL as needed
                 } else {
                     addMessageToChat(message, 'bot');
                 }

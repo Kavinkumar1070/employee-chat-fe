@@ -316,7 +316,7 @@ body.blur-active .container {
             sendButton.disabled = false;
         }
  
-        const websocket = new WebSocket("ws://127.0.0.1:8000/ws/chat");
+        const websocket = new WebSocket("ws:https://employee-chat-fe-model-dev-221d3977ca1e.herokuapp.com/ws/chat");
  
         websocket.onopen = () => {
             console.log("WebSocket connection established.");

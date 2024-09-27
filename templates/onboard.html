@@ -33,7 +33,7 @@
             const initialMessage = document.getElementById('initial');
 
             // Ensure the WebSocket URL is correct
-            const websocket = new WebSocket("wss:https://employee-chat-fe-model-dev-221d3977ca1e.herokuapp.com/ws/onboard");
+            const websocket = new WebSocket("wss://employee-chat-fe-model-dev-221d3977ca1e.herokuapp.com/ws/onboard");
 
             websocket.onopen = () => {
                 console.log("WebSocket connection established.");

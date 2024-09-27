@@ -21,5 +21,8 @@ def onboard():
     return render_template('onboard.html')
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Use the PORT env variable or 5000 by default
-    app.run(host="0.0.0.0", port=port)
+    # Get the PORT and HOST from environment variables
+    port = int(os.environ.get("PORT", 5000))  # Default to 5000 if not set
+    host = os.environ.get("HOST", "0.0.0.0")  # Default to 0.0.0.0 if not set
+
+    app.run(host=host, port=port)

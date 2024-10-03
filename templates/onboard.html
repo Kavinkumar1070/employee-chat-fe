@@ -169,7 +169,7 @@
             };
 
             websocket.onmessage = (event) => {
-                const message = event.data;
+                 message = event.data;
 
                 // Handle the navigation command
                 if (message === "navigate") {
@@ -182,24 +182,33 @@
 
                     // Add the bot's message along with the choices
                     addMessageWithChoices(promptMessage[0].trim(), choices);
-                }
-                // Handle standard bot responses
-                else if (message.includes("datatype")) {
-                    const datatypes = message.split("datatype:");
-                    console.log(datatypes);
-                    handelDatatypeInput(datatypes[0], datatypes[1])
-
+                }else if (message.includes("datatype")) {
                     let description, datatype, regexFormat;
+                
+                    // Extract the description before 'datatype:'
                     description = message.split("datatype:")[0].trim();
-                    console.log(description)
-                    if (message.includes("formate")) {
-
+                
+                    // Check if the message contains 'format' (correct spelling)
+                    if (message.includes("format:")) {
+                        // Extract the datatype and regexFormat
                         datatype = message.split("datatype:")[1].split(",")[0].trim();
-                        console.log(datatype)
-                        regexFormat = message.split("formate:")[1].trim();
-                        handelDatatypeInput(description, datatype, regexFormat)
+                        console.log("Datatype:", datatype);
+                
+                        regexFormat = message.split("format:")[1].trim();  // Extract regex format
+                        console.log("Regex Format:", regexFormat);
+                
+                        // Call the function with description, datatype, and regexFormat
+                        handelDatatypeInput(description, datatype, regexFormat);
+                
+                    } else {
+                        // Extract datatype without regexFormat
+                        datatype = message.split("datatype:")[1].trim();
+                        console.log("Datatype:", datatype);
+                        console.log("Description:", description);
+                
+                        // Call the function without regexFormat
+                        handelDatatypeInput(description, datatype);
                     }
-
                 }
                 // Handle standard bot responses
                 else {

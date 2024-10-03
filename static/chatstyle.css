@@ -116,7 +116,7 @@ body {
 }
 
 .main-content {
-    width: 60%; /* Fixed width to 60% */
+    width: 75%; /* Fixed width to 60% */
     display: flex;
     flex-direction: column;
     height: 92%; /* Full height to make sure input is always at the bottom */

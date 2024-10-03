@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
- 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot UI</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='onstyle.css') }}"></head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='onstyle.css') }}">
+</head>
 <style>
     .home-btn {
         background-color: #697565;
@@ -18,16 +19,16 @@
         font-size: 16px;
         font-weight: 600;
     }
- 
+
     .home-btn:hover {
         transform: translateY(-5px);
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
     }
- 
+
     .choices-container {
         margin-top: 10px;
     }
- 
+
     .choice-btn {
         position: relative;
         overflow: hidden;
@@ -41,13 +42,13 @@
         transition: background-color 0.3s ease, transform 0.3s ease;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
     }
- 
+
     .choice-btn:hover {
         background-color: #5a654b;
         transform: scale(1.05);
         box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
     }
- 
+
     .choice-btn:active::after {
         content: "";
         display: block;
@@ -62,25 +63,75 @@
         border-radius: 50%;
         animation: ripple 0.6s ease-out;
     }
- 
+
     @keyframes ripple {
         0% {
             transform: translate(-50%, -50%) scale(0);
             opacity: 1;
         }
- 
+
         100% {
             transform: translate(-50%, -50%) scale(1);
             opacity: 0;
         }
     }
- 
+
     .choice-btn.disabled {
         opacity: 0.6;
         cursor: not-allowed;
     }
+
+    input[type="date"] {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #e5e5ea;
+        border-radius: 20px;
+        background-color: #EEEEEE;
+        color: #3C3D37;
+        outline: none;
+        font-size: 18px;
+        margin-right: 10px;
+        appearance: none;
+        /* Remove default styling in some browsers */
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        /* Optional: Change background for the date picker */
+        border: none;
+        /* Optional: Remove border */
+        color: #32332e;
+        /* Optional: Change color of the indicator */
+    }
+
+    /* Additional styling to remove the default arrow in Firefox */
+    input[type="date"]::-moz-inner-spin-button {
+        display: none;
+    }
+
+    input[type="number"] {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #e5e5ea;
+        border-radius: 20px;
+        background-color: #EEEEEE;
+        color: #3C3D37;
+        outline: none;
+        font-size: 18px;
+        margin-right: 10px;
+        appearance: none;
+        /* Remove default styling in some browsers */
+    }
+
+    /* Optional: Style for the spinner buttons in Chrome */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        /* Remove default spinner */
+        margin: 0;
+        /* Reset margin */
+    }
 </style>
- 
+
 <body>
     <div class="main-content">
         <div class="headerbox">
@@ -109,17 +160,17 @@
             const userInput = document.getElementById('user-input');
             const sendButton = document.querySelector('.input-box button'); // Button element
             const initialMessage = document.getElementById('initial');
-       
+
             // Ensure the WebSocket URL is correct
             const websocket = new WebSocket("wss://employee-chat-fe-model-dev-221d3977ca1e.herokuapp.com/ws/onboard");
-       
+
             websocket.onopen = () => {
                 console.log("WebSocket connection established.");
             };
-       
+
             websocket.onmessage = (event) => {
                 const message = event.data;
-       
+
                 // Handle the navigation command
                 if (message === "navigate") {
                     window.location.href = "/index.html";  // Update URL as needed
@@ -128,25 +179,121 @@
                 else if (message.includes("Choices are:")) {
                     const promptMessage = message.split("Choices are:");
                     const choices = promptMessage[1].trim();
-       
+
                     // Add the bot's message along with the choices
                     addMessageWithChoices(promptMessage[0].trim(), choices);
+                }
+                // Handle standard bot responses
+                else if (message.includes("datatype")) {
+                    const datatypes = message.split("datatype:");
+                    console.log(datatypes);
+                    handelDatatypeInput(datatypes[0], datatypes[1])
+
+                    let description, datatype, regexFormat;
+                    description = message.split("datatype:")[0].trim();
+                    console.log(description)
+                    if (message.includes("formate")) {
+
+                        datatype = message.split("datatype:")[1].split(",")[0].trim();
+                        console.log(datatype)
+                        regexFormat = message.split("formate:")[1].trim();
+                        handelDatatypeInput(description, datatype, regexFormat)
+                    }
+
                 }
                 // Handle standard bot responses
                 else {
                     addMessageToChat(message, 'bot');
                 }
             };
-       
+            function handelDatatypeInput(message, type, regexFormat = null) {
+                const description = message;
+                const datatype = type;
+                console.log("datatype", datatype)
+
+                const messageDiv = document.createElement("div");
+                messageDiv.classList.add('message', 'bot')
+                messageDiv.textContent = description;
+                chatBox.appendChild(messageDiv);
+
+                if (datatype === "integer") {
+                    userInput.setAttribute("type", "number");
+                    userInput.setAttribute('inputmode', 'numeric');
+                    userInput.setAttribute('pattern', '[0-9]*');
+                } else if (datatype == "date") {
+                    userInput.setAttribute("type", 'date');
+                } else if (datatype == "mobile") {
+                    userInput.setAttribute("type", 'number');
+                } else if (datatype == "regex") {
+                    userInput.setAttribute('pattern', regexFormat)
+                };
+
+                const validateInput = function () {
+                    let isValid = true;
+                    if (datatype == "mobile") {
+                        isValid = /^\d{10}$/.test(userInput.value);
+                        userInput.style.borderColor = isValid ? 'green' : 'red';
+                    } else if (datatype == 'integer') {
+                        isValid = /^-?\d+$/.test(userInput.value.trim());
+                        userInput.style.borderColor = isValid ? 'green' : 'red';
+                    } else if (datatype == "date") {
+                        isValid = userInput.valueAsDate;
+                        userInput.style.borderColor = isValid ? 'green' : 'red';
+                    } else if (regexFormat) {
+                        const regex = new RegExp(regexFormat);
+                        isValid = regex.test(userInput.value);
+                        userInput.style.borderColor = isValid ? 'green' : 'red';
+                    } else {
+                        userInput.style.borderColor = '';
+                    };
+
+                    sendButton.disabled = !isValid
+                    active_enter = isValid
+                };
+
+                userInput.addEventListener('input', validateInput);
+                const cleanup = function () {
+                    userInput.removeEventListener('input', validateInput);
+                    userInput.setAttribute('type', 'text');
+                    userInput.removeAttribute('pattern');
+                    userInput.removeAttribute('inputmode');
+                    userInput.style.borderColor = '';
+                    sendButton.disabled = true;
+                };
+
+                sendButton.onclick = function () {
+                    sendMessage();
+                    userInput.removeEventListener('input', validateInput);
+                    userInput.setAttribute('type', 'text'); // Reset to default type
+                    userInput.removeAttribute('pattern');
+                    userInput.removeAttribute('inputmode');
+                    userInput.style.borderColor = ''; // Reset border color
+                    sendButton.disabled = true;
+                    cleanup();
+                };
+                userInput.addEventListener('keypress', function (event) {
+                    console.log("blue")
+                    if (event.key === 'Enter' && userInput.value !== "" && active_enter) { // Check if the pressed key is Enter
+                        console.log("inblue")
+                        event.preventDefault(); // Prevent default Enter key behavior
+                        if (!sendButton.disabled) {
+                            sendButton.onclick(); // Trigger the send button click only if input is valid
+                        } else {
+                            console.log("Input invalid, message not sent.");
+                        }
+                    }
+                });
+            }
+
             function addMessageWithChoices(message, choices) {
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message', 'bot');
                 messageDiv.textContent = message;
-       
+
                 // Create a container for choice buttons
                 const choicesContainer = document.createElement('div');
                 choicesContainer.classList.add('choices-container');
-       
+
                 // Create buttons for each choice
                 const choicesArray = choices.split(',');  // Assuming choices are comma-separated
                 choicesArray.forEach((choice) => {
@@ -154,34 +301,34 @@
                     choiceButton.textContent = choice.trim();
                     choiceButton.classList.add('choice-btn');
                     choiceButton.setAttribute('data-value', choice.trim());
-       
+
                     // Add click event listener for choice selection
                     choiceButton.addEventListener('click', () => {
                         handleChoiceSelection(choice.trim());
                         disableChoicesContainer(choicesContainer);
                     });
-       
+
                     choicesContainer.appendChild(choiceButton);
                 });
-       
+
                 messageDiv.appendChild(choicesContainer);
                 chatBox.appendChild(messageDiv);
                 chatBox.scrollTop = chatBox.scrollHeight;  // Scroll to the bottom
-       
+
                 // Disable input until a choice is made
                 userInput.disabled = true;
                 sendButton.disabled = true;
             }
-       
+
             function handleChoiceSelection(choice) {
                 // Send the selected choice as a message
                 sendMessageRadio(choice);
-       
+
                 // Re-enable the input after a choice is made
                 userInput.disabled = false;
                 sendButton.disabled = false;
             }
-       
+
             function disableChoicesContainer(container) {
                 const buttons = container.querySelectorAll('.choice-btn');
                 buttons.forEach(button => {
@@ -189,28 +336,45 @@
                     button.classList.add('disabled');  // Optionally style disabled buttons
                 });
             }
-       
+            userInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' && userInput.type === "text" && typeof message === 'string' && !message.includes("datatype")) {
+                    sendMessage();
+                }
+            });
+
             // Send message through WebSocket
             function sendMessage() {
-                const message = userInput.value.trim();
+                let message;
+                if (userInput.valueAsDate) {
+                    const dateValue = userInput.valueAsDate; // Get the date object from the input
+                    const day = String(dateValue.getDate()).padStart(2, '0'); // Get the day, padded to 2 digits
+                    const month = String(dateValue.getMonth() + 1).padStart(2, '0'); // Get the month (0-indexed), padded to 2 digits
+                    const year = dateValue.getFullYear(); // Get the year
+
+                    // Reformat the date to dd/mm/yyyy
+                    message = `${day}/${month}/${year}`;
+                } else {
+
+                    message = userInput.value;
+                }
                 if (message === "") return;  // Prevent empty messages
-       
+
                 if (initialMessage) {
                     initialMessage.style.display = 'none';  // Hide initial message
                 }
-       
+
                 addMessageToChat(message, 'user');
                 websocket.send(JSON.stringify({ message: message }));
-       
+
                 userInput.value = "";  // Clear input after sending
             }
-       
+
             // Send radio-style message directly (used for choices)
             function sendMessageRadio(choice) {
                 addMessageToChat(choice, 'user');  // Display the choice in chat
                 websocket.send(JSON.stringify({ message: choice }));  // Send choice to server
             }
-       
+
             function addMessageToChat(message, sender) {
                 const messageElement = document.createElement('div');
                 messageElement.classList.add('message', sender);
@@ -218,21 +382,21 @@
                 chatBox.appendChild(messageElement);
                 chatBox.scrollTop = chatBox.scrollHeight;  // Scroll to bottom of chat
             }
-       
+
             // Handle Enter key to send message
             userInput.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter') {
+                if (event.key === 'Enter' && userInput.type == "text" && !message) {
                     sendMessage();
                 }
             });
-       
+
             // Populate input field and send message automatically
             function populateAndSend(text) {
                 userInput.value = text;
                 sendMessage();
             }
-        </script>        
+        </script>
     </div>
 </body>
- 
+
 </html>

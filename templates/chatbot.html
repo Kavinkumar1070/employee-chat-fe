@@ -169,6 +169,55 @@
         opacity: 0.6;
         cursor: not-allowed;
     }
+    input[type="date"] {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #e5e5ea;
+        border-radius: 20px;
+        background-color: #EEEEEE;
+        color: #3C3D37;
+        outline: none;
+        font-size: 18px;
+        margin-right: 10px;
+        appearance: none;
+        /* Remove default styling in some browsers */
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        /* Optional: Change background for the date picker */
+        border: none;
+        /* Optional: Remove border */
+        color: #32332e;
+        /* Optional: Change color of the indicator */
+    }
+
+    /* Additional styling to remove the default arrow in Firefox */
+    input[type="date"]::-moz-inner-spin-button {
+        display: none;
+    }
+
+    input[type="number"] {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #e5e5ea;
+        border-radius: 20px;
+        background-color: #EEEEEE;
+        color: #3C3D37;
+        outline: none;
+        font-size: 18px;
+        margin-right: 10px;
+        appearance: none;
+        /* Remove default styling in some browsers */
+    }
+
+    /* Optional: Style for the spinner buttons in Chrome */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        /* Remove default spinner */
+        margin: 0;
+        /* Reset margin */
+    }
 </style>
 
 <body>

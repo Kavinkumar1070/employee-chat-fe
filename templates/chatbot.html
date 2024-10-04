@@ -499,7 +499,7 @@
             if (regexFormat) {
                 userInput.setAttribute('pattern', regexFormat); // Set custom regex pattern
             }
-
+            sendButton.disabled= true
             // Input validation function
             console.log("1");
             const validateInput = function () {
@@ -563,7 +563,7 @@
                 userInput.removeAttribute('pattern');
                 userInput.removeAttribute('inputmode');
                 userInput.style.borderColor = ''; // Reset border color
-                sendButton.disabled = true; // Disable send button again
+                sendButton.disabled = false; // Disable send button again
             };
             // Assuming you have a send button logic
             sendButton.onclick = function () {

@@ -237,6 +237,7 @@
                 } else if (datatype == "regex") {
                     userInput.setAttribute('pattern', regexFormat)
                 };
+                sendButton.disabled= true
 
                 const validateInput = function () {
                     let isValid = true;
@@ -268,7 +269,7 @@
                     userInput.removeAttribute('pattern');
                     userInput.removeAttribute('inputmode');
                     userInput.style.borderColor = '';
-                    sendButton.disabled = true;
+                    sendButton.disabled = false;
                 };
 
                 sendButton.onclick = function () {

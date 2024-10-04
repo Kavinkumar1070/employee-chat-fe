@@ -116,10 +116,10 @@ body {
 }
 
 .main-content {
-    width: 60%; /* Fixed width to 60% */
+    width: 70%; /* Fixed width to 60% */
     display: flex;
     flex-direction: column;
-    height: 92%; /* Full height to make sure input is always at the bottom */
+    height: 88%; /* Full height to make sure input is always at the bottom */
     margin: 10px auto; /* Center horizontally */
 }
 

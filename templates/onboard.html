@@ -224,6 +224,7 @@
                 messageDiv.classList.add('message', 'bot')
                 messageDiv.textContent = description;
                 chatBox.appendChild(messageDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
 
                 if (datatype === "integer") {
                     userInput.setAttribute("type", "number");
@@ -272,6 +273,7 @@
 
                 sendButton.onclick = function () {
                     sendMessage();
+                    chatBox.scrollTop = chatBox.scrollHeight;
                     userInput.removeEventListener('input', validateInput);
                     userInput.setAttribute('type', 'text'); // Reset to default type
                     userInput.removeAttribute('pattern');
